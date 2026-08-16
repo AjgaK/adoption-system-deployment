@@ -19,13 +19,16 @@ spec:
     spec:
       containers:
         - name: adoption-service
-          image: ajgak/adoption-service:1.0
+          image: ajgak/adoption-service:1.0.1
           imagePullPolicy: IfNotPresent
 
           ports:
             - containerPort: 8082
 
           env:
+            - name: APP_VERSION
+              value: "1.0.1"
+
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:

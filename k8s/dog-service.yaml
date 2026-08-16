@@ -19,13 +19,16 @@ spec:
     spec:
       containers:
         - name: dog-service
-          image: ajgak/dog-service:1.0
+          image: ajgak/dog-service:1.0.0
           imagePullPolicy: IfNotPresent
 
           ports:
             - containerPort: 8081
 
           env:
+            - name: APP_VERSION
+              value: "1.0.0"
+
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:
@@ -43,6 +46,7 @@ spec:
                 secretKeyRef:
                   name: database-secret
                   key: password
+
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
@@ -71,6 +75,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
 ---
 apiVersion: v1
 kind: Service
