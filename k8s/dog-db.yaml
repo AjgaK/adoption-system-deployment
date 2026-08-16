@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dog-db-pvc
+  namespace: adoption-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dog-db
+  namespace: adoption-system
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: dog-db
+
+  template:
+    metadata:
+      labels:
+        app: dog-db
+
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17
+
+          ports:
+            - containerPort: 5432
+
+          env:
+            - name: POSTGRES_DB
+              value: dog_db
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: username
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: password
+
+          volumeMounts:
+            - name: dog-data
+              mountPath: /var/lib/postgresql/data
+
+      volumes:
+        - name: dog-data
+          persistentVolumeClaim:
+            claimName: dog-db-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dog-db
+  namespace: adoption-system
+spec:
+  selector:
+    app: dog-db
+
+  ports:
+    - port: 5432
+      targetPort: 5432

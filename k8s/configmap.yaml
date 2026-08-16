@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+  namespace: adoption-system
+
+data:
+  DOG_SERVICE_URL: http://dog-service:8081
+  DOG_DATABASE_URL: jdbc:postgresql://dog-db:5432/dog_db
+  ADOPTION_DATABASE_URL: jdbc:postgresql://adoption-db:5432/adoption_db

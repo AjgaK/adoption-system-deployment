@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adoption-service
+  namespace: adoption-system
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: adoption-service
+
+  template:
+    metadata:
+      labels:
+        app: adoption-service
+
+    spec:
+      containers:
+        - name: adoption-service
+          image: ajgak/adoption-service:1.0
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8082
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: application-config
+                  key: ADOPTION_DATABASE_URL
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: password
+
+            - name: DOG_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: application-config
+                  key: DOG_SERVICE_URL
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            periodSeconds: 5
+            failureThreshold: 12
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adoption-service
+  namespace: adoption-system
+
+spec:
+  selector:
+    app: adoption-service
+
+  ports:
+    - port: 8082
+      targetPort: 8082
+
+  type: ClusterIP
