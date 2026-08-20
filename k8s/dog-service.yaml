@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dog-service
-          image: ajgak/dog-service:2a90569ffdb921adb53090c52e9a424cf0735a19
+          image: ajgak/dog-service:37a49cf6a307173fa89840b55c360f783f4f4bec
           imagePullPolicy: IfNotPresent
 
           ports:
