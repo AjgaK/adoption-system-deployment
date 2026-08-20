@@ -5,7 +5,7 @@ metadata:
   namespace: adoption-system
 
 spec:
-  replicas: 2
+  replicas: 3
 
   selector:
     matchLabels:
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dog-service
-          image: ajgak/dog-service:1.0.0
+          image: ajgak/dog-service:2a90569ffdb921adb53090c52e9a424cf0735a19
           imagePullPolicy: IfNotPresent
 
           ports:

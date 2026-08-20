@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: adoption-service
-          image: ajgak/adoption-service:1.0.1
+          image: ajgak/adoption-service:236405f66d9294da818078037a8404f7e7aef36b
           imagePullPolicy: IfNotPresent
 
           ports:
