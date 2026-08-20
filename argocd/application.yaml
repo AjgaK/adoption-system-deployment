@@ -16,3 +16,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: adoption-system
+
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
